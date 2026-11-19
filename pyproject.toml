@@ -1,0 +1,70 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "eigenforge"
+version = "2.0.0"
+description = "EigenGAN & DDPM/DDIM Generative Modeling Suite with Crash-Consistent Checkpoints and Honest Evaluation Gates"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+authors = [
+    {name = "ZJUSE AI Camp Contributors"}
+]
+keywords = ["EigenGAN", "DDPM", "DDIM", "EigenForge", "Generative-AI", "Subspace-Learning", "Clean-FID", "PyTorch"]
+
+dependencies = [
+    # torch>=2.10.0 covers two weights_only bypasses: CVE-2025-32434 (fixed 2.6.0)
+    # and CVE-2026-24747 (weights_only unpickler memory corruption on <2.10.0, fixed 2.10.0).
+    "torch>=2.10.0",
+    "torchvision>=0.25.0",
+    "numpy>=1.24.0,<3",
+    "scipy>=1.10.0",
+    "tqdm>=4.65.0",
+    "pydantic>=2.5.0",
+    "pydantic-settings>=2.0.0",
+    "python-dotenv>=1.0.0",
+    "loguru>=0.7.2",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-cov>=5.0.0",
+    "ruff>=0.4.0",
+    "mypy>=1.10.0",
+]
+eval = [
+    "clean-fid>=0.1.35",
+    "torch-fidelity>=0.4.0",
+    "lpips>=0.1.4",
+    # clean-fid 0.1.35 calls scipy.linalg.sqrtm(..., disp=False); SciPy 1.18 removed `disp`.
+    "scipy<1.18",
+]
+safetensors = [
+    "safetensors>=0.4.3",
+]
+
+[tool.pytest.ini_options]
+addopts = ["--import-mode=importlib"]
+pythonpath = ["src"]
+markers = [
+    "slow: heavyweight model-download tests, skipped in CI",
+]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 110
+target-version = "py310"
+src = ["src", "scripts", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I"]
+ignore = ["E501"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["eigenforge"]
+
+[tool.setuptools.packages.find]
+where = ["src"]

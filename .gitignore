@@ -1,0 +1,40 @@
+# Git & IDE ignores
+.git/
+.zcode/
+.zcodeignore
+.task/
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+.idea/
+.vscode/
+
+# Local environment files
+.env
+.env.local
+.env.*.local
+
+# Datasets, checkpoints, and runtime outputs
+data/
+checkpoints/
+experiments/
+logs/
+outputs/
+*.ckpt
+*.pth
+*.pt
+*.safetensors
+*.onnx
+*.bin
+*.h5

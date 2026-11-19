@@ -1,0 +1,50 @@
+# EigenForge (GenAI Face) 参考配置 —— 【本文件不被代码加载】
+#
+# 运行时唯一生效来源是 CLI 参数与 AppConfig/.env（见 src/eigenforge/common/config.py）。
+# 本文件仅供教学阅读与运维参考，修改它不会改变任何行为。
+# 若要改变训练行为，请传 CLI 参数，例如：
+#   python -m eigenforge.train_eigengan --ortho-weight 1.0 --n-basis 6
+#
+# 下列数值已与代码默认值对齐（截至最近一次审计）；若与代码不一致，以代码为准。
+
+eigenforge:
+  image_size: 64            # train_eigengan --image-size
+  batch_size: 32            # train_eigengan --batch-size
+  z_dim: 128                # train_eigengan --z-dim
+  n_basis: 6                # train_eigengan --n-basis
+  epochs: 1                 # train_eigengan --epochs（默认 1；长训需显式指定）
+  lr: 2.0e-4                # train_eigengan --lr
+  ortho_weight: 1.0         # train_eigengan --ortho-weight（代码默认 1.0，非 0.1）
+                            # 默认正交项为归一化 Gram-MSE（层间取均值）；官方 EigenGAN 是
+                            # 0.5*Σ(UᵀU−I)² 逐层求和、权重 1。同等 Gram 误差下官方项是本项目的
+                            # 0.5*K² × 层数 倍（K=6、64px 共 5 层 ⇒ 90 倍，已用代码实测）。
+                            # 因此 1.0 只是很弱的锚定。保持此尺度是硬约束；要对齐官方强度须
+                            # 把权重调到约 90 并重训对比，不能改 total_orthogonality_loss 的尺度。
+  r1_gamma: 10.0            # train_eigengan --r1-gamma
+  d_reg_every: 16           # 惰性 R1 间隔；非正则步不构建二阶计算图
+  ema_decay: 0.999          # train_eigengan --ema-decay
+  data_root: ./data/celeba  # 需自备 ImageFolder 结构的 CelebA
+  output_dir: ./experiments/eigengan
+  seed: 42
+  device: auto              # 代码按 torch.cuda.is_available() 选择
+
+# DDPM / DDIM 设置（train_diffusion.py）
+diffusion:
+  num_timesteps: 1000       # --num-timesteps
+  schedule: cosine          # --schedule {linear,cosine}
+  epochs: 1                 # --epochs（默认 1）
+  lr: 1.0e-4                # --lr
+  batch_size: 16            # --batch-size
+  ema_decay: 0.9999         # --ema-decay
+  ddim_steps: 50            # 采样步数；时间网格严格递减且以 -1 哨兵结尾
+  eta: 0.0                  # 0=确定性 DDIM，1=接近 DDPM
+
+# 评测默认值（GenAIEvaluator 方法签名）
+eval:
+  kid_subsets: 100          # calculate_kid(subsets=...)
+  kid_max_subset: 1000      # calculate_kid(max_subset_size=...)
+  is_splits: 10             # calculate_inception_score(splits=...)
+  fid_inputs: ./data/celeba
+  # PPL/KID/IS 在未启用官方后端时仅为轻量代理指标；
+  # 无固定数据集与评测协议时，不可声称可与论文对比。
+  # Inception 预处理使用权重自带 transforms（resize342→crop299→ImageNet 归一化）。
