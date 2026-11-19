@@ -92,12 +92,9 @@ flowchart TB
 ```text
 eigenforge/
 ├── .github/                              # CI 工作流与 GitHub 社区治理规范
-│   ├── ISSUE_TEMPLATE/                   # Bug 报告与功能请求模板
+│   ├── ISSUE_TEMPLATE/                   # Issue 模板
 │   ├── workflows/ci.yml                  # GitHub Actions 自动化门禁
-│   ├── CODE_OF_CONDUCT.md                # 社区行为准则
-│   ├── CONTRIBUTING.md                   # 贡献指南与验证清单
-│   ├── PULL_REQUEST_TEMPLATE.md          # PR 自检清单模板
-│   └── SECURITY.md                       # 安全漏洞披露与 PyTorch CVE 防护说明
+│   └── PULL_REQUEST_TEMPLATE.md          # PR 自检清单模板
 ├── configs/
 │   └── eigenforge.yaml                     # 训练与评测超参只读参考镜像（不被运行时代码加载）
 ├── docs/
@@ -243,7 +240,6 @@ python scripts/traverse_eigen_dims.py --checkpoint experiments/eigengan/latest.p
 ## 开源治理与致谢
 
 - 本项目采用 [MIT License](LICENSE) 开源，学术引用信息见 [CITATION.cff](CITATION.cff)。
-- **项目渊源**：本项目脱胎于浙江大学软件学院（ZJUSE）夏令营的课程考核项目——对课程中 EigenGAN（PyTorch 重写）与扩散模型人脸生成的课程 notebook 进行的工程化重构与开源扩展。
+- **项目渊源**：本项目是浙江大学的考核项目，要求根据论文 He, Kan, Shan, *EigenGAN: Layer-Wise Eigen-Learning for GANs*, ICCV 2021 实现一个人脸识别项目。
 - **官方实现对拍来源**：[`LynnHo/EigenGAN-Tensorflow`](https://github.com/LynnHo/EigenGAN-Tensorflow)（MIT License, Copyright (c) 2021 Zhenliang He）与论文 *EigenGAN: Layer-Wise Eigen-Learning for GANs* (ICCV 2021)。
 - **对应文件**：`src/eigenforge/models/eigengan_faithful.py`、`src/eigenforge/train_eigengan_faithful.py`、`scripts/traverse_eigengan_faithful.py`。
-- **社区文档**：贡献指南见 [.github/CONTRIBUTING.md](.github/CONTRIBUTING.md)，安全漏洞报告策略见 [.github/SECURITY.md](.github/SECURITY.md)，社区行为准则见 [.github/CODE_OF_CONDUCT.md](.github/CODE_OF_CONDUCT.md)。

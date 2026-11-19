@@ -96,6 +96,3 @@ flowchart LR
 - **根目录协作规范**：[../AGENTS.md](../AGENTS.md)
 - **学术引用元数据**：[../CITATION.cff](../CITATION.cff)
 - **开源许可证**：[../LICENSE](../LICENSE)（MIT License，含 `LynnHo/EigenGAN-Tensorflow` 署名说明）
-- **贡献指南**：[../.github/CONTRIBUTING.md](../.github/CONTRIBUTING.md)
-- **安全策略**：[../.github/SECURITY.md](../.github/SECURITY.md)
-- **行为准则**：[../.github/CODE_OF_CONDUCT.md](../.github/CODE_OF_CONDUCT.md)
