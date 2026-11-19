@@ -243,6 +243,7 @@ python scripts/traverse_eigen_dims.py --checkpoint experiments/eigengan/latest.p
 ## 开源治理与致谢
 
 - 本项目采用 [MIT License](LICENSE) 开源，学术引用信息见 [CITATION.cff](CITATION.cff)。
+- **项目渊源**：本项目脱胎于 2025 届浙江大学软件学院夏令营（AI 营）课程考核的 Project1 notebook，感谢 [@Devin100086](https://github.com/Devin100086) 开源的考核仓库 [`2025-ZJUSE-SummerCamp-AI-Camp`](https://github.com/Devin100086/2025-ZJUSE-SummerCamp-AI-Camp)（其 `Project1/main.ipynb` 为本仓库的工程化重构起点）。
 - **官方实现对拍来源**：[`LynnHo/EigenGAN-Tensorflow`](https://github.com/LynnHo/EigenGAN-Tensorflow)（MIT License, Copyright (c) 2021 Zhenliang He）与论文 *EigenGAN: Layer-Wise Eigen-Learning for GANs* (ICCV 2021)。
 - **对应文件**：`src/eigenforge/models/eigengan_faithful.py`、`src/eigenforge/train_eigengan_faithful.py`、`scripts/traverse_eigengan_faithful.py`。
 - **社区文档**：贡献指南见 [.github/CONTRIBUTING.md](.github/CONTRIBUTING.md)，安全漏洞报告策略见 [.github/SECURITY.md](.github/SECURITY.md)，社区行为准则见 [.github/CODE_OF_CONDUCT.md](.github/CODE_OF_CONDUCT.md)。
