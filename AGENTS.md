@@ -13,7 +13,6 @@ This repository (checkout folder name may differ) is a self-contained generative
 - `tests/`: unit and contract regression tests (`conftest.py` + `test_*.py`)
 - `docs/`: structured documentation suite (`INDEX.md`, `MODEL_CARD.md`, `ARCHITECTURE_AND_MATHEMATICS.md`, `EVALUATION_AND_QUALITY_GATES.md`, `CHECKPOINT_AND_SECURITY_SPEC.md`, `CLI_AND_CONFIGURATION_REFERENCE.md`)
 - `configs/eigenforge.yaml`: read-only reference mirror; runtime code does not load it
-- `.github/`: CI workflow (`workflows/ci.yml`) and PR/Issue templates
 
 ## Validation commands
 

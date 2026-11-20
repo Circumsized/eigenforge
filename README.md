@@ -91,7 +91,6 @@ flowchart TB
 
 ```text
 eigenforge/
-├── .github/                              # CI 工作流与 GitHub 社区治理规范
 │   ├── ISSUE_TEMPLATE/                   # Issue 模板
 │   ├── workflows/ci.yml                  # GitHub Actions 自动化门禁
 │   └── PULL_REQUEST_TEMPLATE.md          # PR 自检清单模板
