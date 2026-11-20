@@ -175,6 +175,11 @@ python -m eigenforge.train_diffusion [OPTIONS]
 | `--ema-decay` | `float` | `0.9999` | EMA 衰减率上限（带步级 warm-up，见下式） |
 | `--output-dir` | `str` | `"./experiments/diffusion"` | 输出目录（每轮先原子保存 `latest.pt`，再用 EMA 模型执行 50 步 DDIM 采样生成 `sample_<epoch>.png`） |
 | `--resume` / `--allow-unverified-resume` | `str` / `flag` | `None` / `False` | 断点续训路径（强制要求包含 `ema_model`，校验 `num_timesteps, image_size, schedule`） |
+| `--device` | `str` | 自动探测 (`"cuda"` / `"cpu"`) | 运行设备 |
+| `--seed` | `int` | `42` | 全局随机种子（覆盖 `random`、`numpy`、`torch`、`torch.cuda`） |
+| `--num-workers` | `int` | `0` | `DataLoader` 工作进程数 |
+| `--no-amp` | `flag` | `False` | 禁用 CUDA 自动混合精度（CPU 下自动禁用） |
+| `--deterministic` | `flag` | `False` | 开启 `torch.use_deterministic_algorithms(True)` 与 `cudnn.deterministic=True`（需 `CUBLAS_WORKSPACE_CONFIG=:4096:8`；位级可复现仅限同 `torch` 版本同设备） |
 
 其中简化版 EigenGAN 与 DDPM 扩散训练器共享同一 EMA 预热（warm-up）衰减率公式（`ema_decay_at(step, decay)`）：
 

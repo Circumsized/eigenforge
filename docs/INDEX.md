@@ -87,7 +87,7 @@ flowchart LR
 | `src/eigenforge/artifacts.py` | `ArtifactManifest`, `git_metadata` | [CHECKPOINT_AND_SECURITY_SPEC.md §3.2](CHECKPOINT_AND_SECURITY_SPEC.md#32-同旁溯源清单-artifactmanifest-与-git-元数据srceigenforgeartifactspy) | `tests/test_artifacts_smoke.py` |
 | `src/eigenforge/safetensors_io.py` | `export_state_dict`, `import_state_dict`, `metadata` | [CHECKPOINT_AND_SECURITY_SPEC.md §4](CHECKPOINT_AND_SECURITY_SPEC.md#4-纯张量权重安全互操作srceigenforgesafetensors_iopy) | `tests/test_official_metrics.py` |
 | `src/eigenforge/smoke.py` & `scripts/gpu_smoke.py` | `run_smoke`, `aggregate_seed_metrics`, `SmokeCheckError` | [EVALUATION_AND_QUALITY_GATES.md §4.1](EVALUATION_AND_QUALITY_GATES.md#41-训练管线冒烟协议srceigenforgesmokepy--scriptsgpu_smokepy) | `tests/test_artifacts_smoke.py` |
-| `scripts/quality_gate.py` | `run_gate`, `evaluate_thresholds` | [EVALUATION_AND_QUALITY_GATES.md §4.2](EVALUATION_AND_QUALITY_GATES.md#42-三随机种子质量门禁scriptsquality_gatepy) | `tests/test_quality_gate_semantics.py` |
+| `scripts/quality_gate.py` | `run_gate`（阈值裁决内联于 `run_gate`） | [EVALUATION_AND_QUALITY_GATES.md §4.2](EVALUATION_AND_QUALITY_GATES.md#42-三随机种子质量门禁scriptsquality_gatepy) | `tests/test_quality_gate_semantics.py` |
 
 ---
 

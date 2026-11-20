@@ -490,6 +490,10 @@ def test_toy_basis_similarity_losses_and_cosine():
     assert sim == pytest.approx(1.0, abs=1e-5)
 
     logits = torch.randn(8, 1)
+    # The model card documents exactly five losses; pin the count so a sixth
+    # loss cannot be added while the documentation still says five (the card
+    # itself used to claim six).
+    assert len(LOSSES) == 5
     for mode in LOSSES:
         d_fn, g_fn = get_adversarial_losses(mode)
         assert torch.isfinite(d_fn(logits, logits))
@@ -558,3 +562,27 @@ def test_total_orthogonality_loss_keeps_normalized_scale():
         [layer.orthogonality_loss(scale="sum_half") for layer in model.subspace_layers]
     ).mean().item()
     assert total == pytest.approx(2 * sum_half / 4 ** 2)
+
+
+def test_cli_reference_table4_covers_every_train_diffusion_flag():
+    """表 4 claims to be the complete parameter list — hold it to that.
+
+    Before the fix it omitted --device/--seed/--num-workers/--no-amp/
+    --deterministic, all of which train_diffusion.py really accepts. The
+    section must be sliced by its own heading, or the shared flags (which also
+    appear in 表 2 for train_eigengan) would make the test pass vacuously.
+    """
+    from eigenforge import train_diffusion
+
+    doc = (Path(__file__).resolve().parents[1] / "docs" / "CLI_AND_CONFIGURATION_REFERENCE.md").read_text(
+        encoding="utf-8"
+    )
+    section = doc.split("### 2.3")[1].split("## 3.")[0]
+    with patch.object(sys, "argv", ["train_diffusion.py"]):
+        dests = vars(train_diffusion.parse_args())
+    missing = [
+        f"--{d}".replace("_", "-")
+        for d in dests
+        if f"--{d}".replace("_", "-") not in section
+    ]
+    assert not missing, f"表 4 missing train_diffusion flags: {missing}"

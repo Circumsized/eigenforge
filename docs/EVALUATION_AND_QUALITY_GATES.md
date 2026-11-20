@@ -282,7 +282,7 @@ flowchart TD
 | 运行模式 | 阈值与指标状态 | 硬件环境 | 输出 `quality_gate` 状态 | 进程退出码 | 判定语义说明 |
 | :--- | :--- | :--- | :---: | :---: | :--- |
 | 任一模式 | `--seeds` 非法/为空，或传入了 `NaN/Inf` 阈值 | 任意 | （直接拒判，无报告落盘） | **`2`** | 拒绝非法种子或无穷/NaN 阈值绕过 |
-| `--mode protocol`（默认） | 阈值合法且 `--train-steps >= 1` | CPU 或 CUDA | `"not_evaluated"` | `0`（NaN 或 `train_steps<1` 时为 `1`） | 仅验证三种子训练与指标采集协议本身可执行，不做质量背书 |
+| `--mode protocol`（默认） | 阈值合法且 `--train-steps >= 1` | CPU 或 CUDA | `"not_evaluated"` | `0`（`train_steps<1` 或协议内出现 NaN/Inf 指标（`SmokeCheckError`）时为 `1`） | 仅验证三种子训练与指标采集协议本身可执行，不做质量背书 |
 | `--mode evaluate` | 未提供任何 `--max-*` 阈值参数 | 任意 | （直接拒判，无报告落盘） | **`2`** | 拒绝无阈值默认放行 |
 | `--mode evaluate` | 任一指标均值越界（`mean > limit`）或指标非有限 | CPU 或 CUDA | **`"fail"`** | **`1`** | 任何设备上指标越界立即判失败 |
 | `--mode evaluate` | 全部指标未越界 | **CPU（无 CUDA）** | **`"not_evaluated"`** | **`2`** | CPU 上的合成微小协议不能认证生成质量，诚实拒判 |

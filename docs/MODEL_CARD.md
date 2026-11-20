@@ -187,7 +187,7 @@ $$
 | `scripts/traverse_eigengan_faithful.py` | 官方 `test_traversal_all_dims.py` 的对应物：按 \|L\| 降序遍历每个维度，只渲染 EMA 生成器 |
 | `src/eigenforge/evaluation/entropy_coefficient.py` | 论文 Table 1 熵系数的 Eq. (6)–(10)，分类器由调用方提供；概率越界/非有限值会显式报错，而不是静默算出错误数值。纯函数已对解析解自检（恒定概率 → 0、属性完全由 bin 决定 → 约 1），采样驱动函数仍需真实模型与属性分类器 |
 | `src/eigenforge/evaluation/linear_case_mle.py` | 论文附录 A Eq. (43)–(46) 的线性情形 MLE 闭式解（µ、σ²、L、U=PCA 基）；零训练细节依赖。已对合成数据自检：基与 PCA 基一致、σ²≈0.0897 对期望 0.09、L²+σ² 复现特征值 |
-| `src/eigenforge/evaluation/toy_basis_similarity.py` | 论文 Tables 2–3：线性 EigenGAN 对抗训练后与 PCA 基的余弦相似度（五种损失取自官方 `tfprob/gan/loss.py` 原文，数值已与官方 TF 侧逐位核对）；论文未给的协议以 docstring 逐项标注的默认值填充。已对 50 步玩具规模自检：六种损失有限、PCA 相似度随训练上升 |
+| `src/eigenforge/evaluation/toy_basis_similarity.py` | 论文 Tables 2–3：线性 EigenGAN 对抗训练后与 PCA 基的余弦相似度（五种损失公式逐一取自官方 `tfprob/gan/loss.py` 原文；hinge 复用已经 TF 数值对拍的 `hinge_v1`，其余四种仅公式照抄、**未与 TF 侧数值对拍**）；论文未给的协议以 docstring 逐项标注的默认值填充。已由单测断言五种损失数值有限（`tests/test_eigenforge.py`） |
 
 逐项照 `LynnHo/EigenGAN-Tensorflow` commit `fc3e1a2`（MIT，Copyright (c) 2021 Zhenliang He，文件头已署名）：
 
