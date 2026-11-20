@@ -171,7 +171,7 @@ eigenforge/
 
 ### 1. 环境安装
 
-要求 **Python >= 3.10** 且 **PyTorch >= 2.10.0**（覆盖 `torch.load(weights_only=True)` 的历史安全绕过漏洞 CVE-2025-32434 与 CVE-2026-24747）：
+要求 **Python >= 3.12** 且 **PyTorch >= 2.10.0**（覆盖 `torch.load(weights_only=True)` 的历史安全绕过漏洞 CVE-2025-32434 与 CVE-2026-24747）：
 
 ```bash
 python -m venv .venv
