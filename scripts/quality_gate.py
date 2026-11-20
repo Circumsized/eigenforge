@@ -85,7 +85,9 @@ def _run_seed(seed: int, train_steps: int, device: torch.device) -> dict[str, An
     opt_u = torch.optim.Adam(diffusion.parameters(), lr=1e-4)
     diffusion_loss = None
     for _ in range(train_steps):
-        clean = torch.rand(2, 3, 8, 8, device=device)
+        # [-1, 1] like the GAN half above: production train_diffusion.py
+        # normalises with mean/std 0.5 and the sampler clamps x0 to [-1, 1].
+        clean = torch.rand(2, 3, 8, 8, device=device) * 2.0 - 1.0
         t = torch.randint(0, scheduler.num_timesteps, (2,), device=device)
         noisy, noise = scheduler.q_sample_with_noise(clean, t)
         opt_u.zero_grad(set_to_none=True)
@@ -131,6 +133,11 @@ def run_gate(
         raise ValueError(f"mode must be protocol|evaluate, got {mode!r}")
     if train_steps < 1:
         raise ValueError("train_steps must be positive")
+    # Same contract as smoke.run_smoke: an empty seed list would otherwise reach
+    # _aggregate and divide by zero. The CLI already rejects it (exit 2); this
+    # covers library callers, which the tests exercise directly.
+    if not seeds:
+        raise ValueError("seeds must not be empty")
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     per_seed = [_run_seed(seed, train_steps, device) for seed in seeds]

@@ -126,3 +126,49 @@ def test_gpu_smoke_on_cpu_says_it_is_not_a_gpu_verification(monkeypatch, tmp_pat
     assert smoke.main(["--seeds", "0", "--steps", "1", "--output", str(tmp_path / "s.json")]) == 0
     out = capsys.readouterr().out
     assert "SMOKE OK" in out and "NOT a GPU/AMP verification" in out
+
+
+def test_quality_gate_diffusion_uses_production_data_range():
+    """Same contract as the smoke half: [-1, 1] data, matching production.
+
+    Loads the script directly rather than through the `gate` fixture, which
+    monkeypatches _run_seed away — this test needs the real one.
+    """
+    import torch
+
+    from eigenforge.models.diffusion_scheduler import DiffusionScheduler
+
+    module = _load_script("quality_gate")
+    captured: dict[str, float] = {}
+    original = DiffusionScheduler.q_sample_with_noise
+
+    def spy(self, x_start, t, *args, **kwargs):
+        captured["min"] = float(x_start.min())
+        captured["max"] = float(x_start.max())
+        return original(self, x_start, t, *args, **kwargs)
+
+    DiffusionScheduler.q_sample_with_noise = spy
+    try:
+        module._run_seed(0, 1, torch.device("cpu"))
+    finally:
+        DiffusionScheduler.q_sample_with_noise = original
+
+    assert captured["min"] < 0.0, "gate diffusion half still feeds [0,1] data"
+    assert captured["max"] <= 1.0
+
+
+def test_run_gate_rejects_empty_seeds_like_smoke():
+    """An empty seed list is a ValueError, not a ZeroDivisionError.
+
+    _aggregate divides by len(values); the CLI rejects empty seeds with exit 2,
+    and smoke.run_smoke raises the same ValueError, so the library path must too.
+    """
+    module = _load_script("quality_gate")
+    with pytest.raises(ValueError, match="seeds must not be empty"):
+        module.run_gate((), 1, "protocol")
+
+
+def test_cli_rejects_empty_seeds_with_exit_2():
+    """Lock the CLI-side behaviour the library check mirrors."""
+    module = _load_script("quality_gate")
+    assert module.main(["--seeds", "", "--train-steps", "1"]) == 2

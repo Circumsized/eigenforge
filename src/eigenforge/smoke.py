@@ -105,7 +105,10 @@ def _smoke_diffusion(device: torch.device, steps: int) -> dict[str, Any]:
 
     loss_value = None
     for _ in range(steps):
-        clean = torch.rand(TINY_BATCH, 3, TINY_IMG_SIZE, TINY_IMG_SIZE, device=device)
+        # [-1, 1] like the GAN half above and the production trainers
+        # (train_diffusion.py normalises with mean/std 0.5), so the sampler's
+        # x0 clamp assumption holds and this half exercises the real range.
+        clean = torch.rand(TINY_BATCH, 3, TINY_IMG_SIZE, TINY_IMG_SIZE, device=device) * 2.0 - 1.0
         t = torch.randint(0, scheduler.num_timesteps, (TINY_BATCH,), device=device)
         noisy, noise = scheduler.q_sample_with_noise(clean, t)
         optimizer.zero_grad(set_to_none=True)

@@ -526,3 +526,35 @@ def test_orthonormal_basis_is_orthonormal_and_spans_the_same_subspace():
     # Same row space as the raw basis: projecting the raw rows onto Q loses nothing.
     raw = layer.basis.detach()
     torch.testing.assert_close(raw @ q.t() @ q, raw, atol=1e-4, rtol=0)
+
+
+def test_orthogonality_loss_default_scale_is_normalized_gram_mse():
+    """The DEFAULT scale is the training baseline, and only a closed form pins it.
+
+    AGENTS.md hard constraint: the normalized Gram-MSE is the deliberate
+    training baseline. The only default-path assertion above is `> 1.0`, which
+    both scales satisfy (measured: 106.64 normalized vs 853.09 sum_half, a
+    factor K^2/2 = 8), so flipping the default would leave the suite green.
+    """
+    layer = SubspaceLayer(dim=4, n_basis=2, orthonormal_init=False)
+    layer.basis.data = torch.tensor([[1.0, 0.0, 0.0, 0.0], [0.0, 2.0, 0.0, 0.0]])
+    # gram = diag(1, 4) => normalized = MSE(gram, I) = 9/4 = 2.25; sum_half = 4.5
+    assert layer.orthogonality_loss().item() == pytest.approx(2.25)
+
+
+def test_total_orthogonality_loss_keeps_normalized_scale():
+    """The aggregate API the trainer calls keeps the same scale.
+
+    total = mean_l(sum_half_l) * 2 / K^2 (measured to 1e-12). If the aggregate
+    silently switched to the sum_half convention the per-layer test above would
+    still pass while every training run moved by a factor K^2/2.
+    """
+    torch.manual_seed(0)
+    model = EigenGenerator(img_size=8, z_dim=16, n_basis=4, base_channels=8, max_channels=16)
+    for layer in model.subspace_layers:
+        layer.basis.data *= 1.37  # drift off the Stiefel manifold
+    total = model.total_orthogonality_loss().item()
+    sum_half = torch.stack(
+        [layer.orthogonality_loss(scale="sum_half") for layer in model.subspace_layers]
+    ).mean().item()
+    assert total == pytest.approx(2 * sum_half / 4 ** 2)

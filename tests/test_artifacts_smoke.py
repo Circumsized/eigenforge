@@ -180,3 +180,33 @@ def test_cli_writes_report_and_exits_zero(tmp_path):
     assert report["quality_gate"] == "not_evaluated"
     assert report["seeds"] == [0]
     assert "SMOKE" in result.stdout
+
+
+def test_smoke_diffusion_uses_production_data_range():
+    """The diffusion half must train/sample on [-1, 1], like production.
+
+    train_diffusion.py normalises with mean/std 0.5 and the scheduler clamps
+    predicted x0 to [-1, 1]; feeding [0, 1] data here meant the clamp never
+    engaged and the half did not exercise the production range at all.
+    """
+    import torch
+
+    from eigenforge.models.diffusion_scheduler import DiffusionScheduler
+    from eigenforge.smoke import _smoke_diffusion
+
+    captured: dict[str, float] = {}
+    original = DiffusionScheduler.q_sample_with_noise
+
+    def spy(self, x_start, t, *args, **kwargs):
+        captured["min"] = float(x_start.min())
+        captured["max"] = float(x_start.max())
+        return original(self, x_start, t, *args, **kwargs)
+
+    DiffusionScheduler.q_sample_with_noise = spy
+    try:
+        _smoke_diffusion(torch.device("cpu"), 1)
+    finally:
+        DiffusionScheduler.q_sample_with_noise = original
+
+    assert captured["min"] < 0.0, "diffusion half still feeds [0,1] data"
+    assert captured["max"] <= 1.0
