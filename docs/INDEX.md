@@ -94,5 +94,4 @@ flowchart LR
 ## 四、社区治理与工程规范文件
 
 - **根目录协作规范**：[../AGENTS.md](../AGENTS.md)
-- **学术引用元数据**：[../CITATION.cff](../CITATION.cff)
 - **开源许可证**：[../LICENSE](../LICENSE)（MIT License，含 `LynnHo/EigenGAN-Tensorflow` 署名说明）

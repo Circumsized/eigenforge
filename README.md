@@ -145,7 +145,6 @@ eigenforge/
 ├── .env.example                          # 环境变量示例配置
 ├── .gitignore                            # Git 忽略规则
 ├── AGENTS.md                             # 智能体与开发者协作工作约定
-├── CITATION.cff                          # 学术论文与软件引用元数据
 ├── LICENSE                               # MIT 开源许可证
 └── pyproject.toml                        # PEP 621 标准打包与工具链配置
 ```
@@ -239,7 +238,7 @@ python scripts/traverse_eigen_dims.py --checkpoint experiments/eigengan/latest.p
 
 ## 开源治理与致谢
 
-- 本项目采用 [MIT License](LICENSE) 开源，学术引用信息见 [CITATION.cff](CITATION.cff)。
+- 本项目采用 [MIT License](LICENSE) 开源。
 - **项目渊源**：本项目是浙江大学的考核项目，要求根据论文 He, Kan, Shan, *EigenGAN: Layer-Wise Eigen-Learning for GANs*, ICCV 2021 实现一个人脸识别项目。
 - **官方实现对拍来源**：[`LynnHo/EigenGAN-Tensorflow`](https://github.com/LynnHo/EigenGAN-Tensorflow)（MIT License, Copyright (c) 2021 Zhenliang He）与论文 *EigenGAN: Layer-Wise Eigen-Learning for GANs* (ICCV 2021)。
 - **对应文件**：`src/eigenforge/models/eigengan_faithful.py`、`src/eigenforge/train_eigengan_faithful.py`、`scripts/traverse_eigengan_faithful.py`。
